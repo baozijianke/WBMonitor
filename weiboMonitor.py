@@ -14,10 +14,12 @@ class weiboMonitor():
     def __init__(self, ):
         self.session = requests.session()
         self.reqHeaders = {
+            "Origin": "https://passport.weibo.cn",
+            "Accept": "*/*",
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
             'Content-Type': 'application/x-www-form-urlencoded',
             'Referer': 'https://passport.weibo.cn/signin/login',
-            'Connection': 'close',
+            'Connection': 'keep-alive',
             'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
         }
 
@@ -51,6 +53,7 @@ class weiboMonitor():
             if r.status_code == 200 and json.loads(r.text)['retcode'] == 20000000:
                 self.echoMsg('Info','Login successful! UserId:'+json.loads(r.text)['data']['uid'])
             else:
+                print (json.loads(r.text)['retcode'])
                 self.echoMsg('Error','Logon failure!')
                 sys.exit()
         except Exception as e:

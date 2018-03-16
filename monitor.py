@@ -4,7 +4,7 @@
 # Action    : 微博监控
 # Desc      : 微博监控启动模块
 
-import weiboMonitor,time,hashlib,requests
+import WeiboLogin,time,hashlib,requests
 import smtplib
 import base64
 from email.mime.text import MIMEText
@@ -53,9 +53,9 @@ def sendMail(dicts):
         flag = False
     return flag
 
-def main(username,password,wbUserId):
-    w = weiboMonitor.weiboMonitor()
-    w.login(username,password)
+def main(username,password,wbUserId,cookie_path):
+    w = WeiboLogin.WeiboLogin(username, password, cookie_path)
+    w.login()
     w.getWBQueue(wbUserId)
     while 1:
         newWB = w.startMonitor()
@@ -67,4 +67,6 @@ if __name__ == '__main__':
     username = input('Please input your username : ')
     password = input('Please input your password : ')
     wbUserId = input('Please input the weibo user id you want to monitor : ')
-    main(username,password,wbUserId)
+    cookie_path = "cookies"  # 保存cookie 的文件名称
+    main(username,password,wbUserId,cookie_path)
+    
