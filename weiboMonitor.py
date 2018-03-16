@@ -66,7 +66,7 @@ class weiboMonitor():
         userInfo = 'https://m.weibo.cn/api/container/getIndex?uid=%s&type=uid&value=%s'%(wbUserId,wbUserId)
         try:
             r = self.session.get(userInfo,headers=self.reqHeaders)
-            for i in r.json()['tabsInfo']['tabs']:
+            for i in r.json()['data']['tabsInfo']['tabs']:
                 if i['tab_type'] == 'weibo':
                     conId = i['containerid']
         except Exception as e:
@@ -77,7 +77,7 @@ class weiboMonitor():
         try:
             r = self.session.get(self.weiboInfo,headers=self.reqHeaders)
             self.itemIds = []   #WBQueue
-            for i in r.json()['cards']:
+            for i in r.json()['data']['cards']:
                 if i['card_type'] == 9:
                     self.itemIds.append(i['mblog']['id'])
             self.echoMsg('Info','Got weibos')
@@ -92,7 +92,7 @@ class weiboMonitor():
         returnDict = {}
         try:
             r = self.session.get(self.weiboInfo,headers=self.reqHeaders)
-            for i in r.json()['cards']:
+            for i in r.json()['data']['cards']:
                 if i['card_type'] == 9:
                     if str(i['mblog']['id']) not in self.itemIds:
                         self.itemIds.append(i['mblog']['id'])
@@ -103,7 +103,7 @@ class weiboMonitor():
                         returnDict['source'] = i['mblog']['source']
                         returnDict['nickName'] = i['mblog']['user']['screen_name']
                         #if has photos
-                        if i['mblog'].has_key('pics'):
+                        if 'pics' in i['mblog']:
                             returnDict['picUrls'] = []
                             for j in i['mblog']['pics']:
                                 returnDict['picUrls'].append(j['url'])
@@ -119,6 +119,6 @@ class weiboMonitor():
     """
     def echoMsg(self, level, msg):
         if level == 'Info':
-            print '[Info] %s'%msg
+            print ('[Info] %s' %msg)
         elif level == 'Error':
-            print '[Error] %s'%msg
+            print ('[Error] %s' %msg)

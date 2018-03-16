@@ -25,13 +25,13 @@ def downloadImg(imgSrc):
 
 def sendMail(dicts):
     flag = True
-    _user = "" #发件人
-    _pwd  = "" #授权码
-    _to   = "" #收件人
+    _user = "369669697@qq.com" #发件人
+    _pwd  = "bixuauryzhdmcaad" #授权码
+    _to   = "tanjinggui@gmail.com" #收件人
     try:
         text = u'发送时间: '+dicts['created_at']+u'<br>'
         text += u'发送内容: <br>'+dicts['text']+u'<br>'
-        if dicts.has_key('picUrls'):
+        if 'picUrls' in dicts:
             for pic in dicts['picUrls']:
                 imgFile = downloadImg(pic)
                 f = open(imgFile,'rb')
@@ -41,15 +41,15 @@ def sendMail(dicts):
 
         msg=MIMEText(text.encode('utf-8'),'html','utf-8')
         msg['Subject']=u"货来啦~ 您监控的微博用户"+dicts['nickName']+u"发布微博啦"
-        msg['Form'] = formataddr(["微博监控系统",_user])
+        msg['From'] = formataddr(["微博监控系统",_user])
         msg['To'] = formataddr(["微博监控系统",_to])
-        print msg.as_string()
+        print (msg.as_string())
         server = smtplib.SMTP_SSL('smtp.qq.com',465)
         server.login(_user,_pwd)
         server.sendmail(_user, _to, msg.as_string())
         server.quit()
     except Exception as e:
-        print e
+        print (e)
         flag = False
     return flag
 
@@ -60,11 +60,11 @@ def main(username,password,wbUserId):
     while 1:
         newWB = w.startMonitor()
         if newWB is not None:
-            print sendMail(newWB)
+            print (sendMail(newWB))
         time.sleep(3)
 
 if __name__ == '__main__':
     username = input('Please input your username : ')
-    password = raw_input('Please input your password : ')
+    password = input('Please input your password : ')
     wbUserId = input('Please input the weibo user id you want to monitor : ')
     main(username,password,wbUserId)
